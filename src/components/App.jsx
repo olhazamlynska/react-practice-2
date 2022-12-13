@@ -24,16 +24,13 @@ export class App extends Component {
     ) {
       this.fetchMovies();
     }
-
     if (prevState.isGalleryOpen !== isGalleryOpen && !isGalleryOpen) {
       this.setState({ movies: [] });
     }
   }
 
   toggleGallery = () => {
-    this.setState(prevState => ({
-      isGalleryOpen: !prevState.isGalleryOpen,
-    }));
+    this.setState(prevState => ({ isGalleryOpen: !prevState.isGalleryOpen }));
   };
 
   fetchMovies = () => {
@@ -46,7 +43,7 @@ export class App extends Component {
           movies: [...prevState.movies, ...moviesMaper(results)],
         }))
       )
-      .catch(error => this.setState({ error: error.message }))
+      .catch(error => this.setState({ error: error }))
       .finally(() => this.setState({ isLoading: false }));
   };
 
@@ -59,7 +56,6 @@ export class App extends Component {
   loadMore = () => {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
-
   openModal = img => {
     this.setState({ currentImg: img });
   };
@@ -68,33 +64,34 @@ export class App extends Component {
     this.setState({ currentImg: null });
   };
 
-  changeWatched = movieId => {
+  changewatched = movieId => {
     this.setState(prevState => ({
       movies: prevState.movies.map(movie => {
-        if (movie.id === movieId) {
+        if (movieId === movie.id) {
           return { ...movie, watched: !movie.watched };
         }
-
         return movie;
       }),
     }));
   };
 
   render() {
-    const { movies, isGalleryOpen, currentImg } = this.state;
+    const { isGalleryOpen, movies, currentImg } = this.state;
+
     return (
       <>
         <Button
           text={isGalleryOpen ? 'Hide movies' : 'Show movies'}
           handleClick={this.toggleGallery}
         />
+
         {isGalleryOpen && (
           <>
             <Gallery
               movies={movies}
               onDelete={this.deleteMovie}
               openModal={this.openModal}
-              changeWatched={this.changeWatched}
+              changeWatched={this.changewatched}
             />
             <Button text="Load more" handleClick={this.loadMore} />
           </>
